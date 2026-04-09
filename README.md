@@ -1,0 +1,2 @@
+# Implementing the Directed Message Passing Neural Network from scratch
+In this repo I am going through the implementation of the directed message passing neural network from srcatch, with and without PyTorch Geometric. I'm building a notebook to clearly lay out the process, before implementing into a proper model class that can be easily imported elsewhere.
