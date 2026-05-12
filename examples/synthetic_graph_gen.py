@@ -4,7 +4,7 @@ This file contains the code for generating synthetic molecular graphs to test ou
 
 import torch
 import random
-from .graph_utils import make_adjacency, make_directed, graph_signature
+from dmpnn.graph_utils import make_adjacency, make_directed, graph_signature
 
 
 # Fixed target rule
@@ -41,56 +41,6 @@ def compute_target(X, edges_undir, E_undir):
     return torch.tensor([y], dtype=torch.float32)
 
 
-# make hand-built demo graphs
-def make_demo_graphs():
-    graphs = []
-
-    # Graph 1: carbonyl-like
-    X1 = torch.tensor([
-        [1., 0., 0., 0.],  # C
-        [0., 1., 0., 0.],  # O
-        [1., 0., 0., 0.],  # C
-    ])
-    edges1 = [(0, 1), (0, 2)]
-    E1 = torch.tensor([
-        [0., 1.],  # double
-        [1., 0.],  # single
-    ])
-    graphs.append(build_graph(X1, edges1, E1))
-
-    # Graph 2: amine chain
-    X2 = torch.tensor([
-        [1., 0., 0., 0.],  # C
-        [0., 0., 1., 0.],  # N
-        [1., 0., 0., 0.],  # C
-        [0., 1., 0., 0.],  # O
-    ])
-    edges2 = [(0, 1), (1, 2), (2, 3)]
-    E2 = torch.tensor([
-        [1., 0.],
-        [1., 0.],
-        [1., 0.],
-    ])
-    graphs.append(build_graph(X2, edges2, E2))
-
-    # Graph 3: charged amide-like
-    X3 = torch.tensor([
-        [1., 0., 0., 0.],  # C
-        [0., 1., 0., 0.],  # O
-        [0., 0., 1., 1.],  # N charged
-        [1., 0., 0., 0.],  # C
-    ])
-    edges3 = [(0, 1), (0, 2), (2, 3)]
-    E3 = torch.tensor([
-        [0., 1.],  # double
-        [1., 0.],  # single
-        [1., 0.],  # single
-    ])
-    graphs.append(build_graph(X3, edges3, E3))
-
-    return graphs
-
-
 def random_node_feature(rng):
     # one of C, O, N
     atom_type = rng.choice(["C", "O", "N"])
@@ -111,21 +61,6 @@ def random_bond_feature(rng):
         return [0., 1.]
     return [1., 0.]
 
-
-def generate_random_chain_graph(rng, min_nodes=3, max_nodes=5):
-    num_nodes = random.randint(min_nodes, max_nodes)
-
-    X = torch.tensor([random_node_feature(rng) for _ in range(num_nodes)], dtype=torch.float32)
-
-    # simple connected chain
-    edges_undir = [(i, i + 1) for i in range(num_nodes - 1)]
-
-    E_undir = torch.tensor(
-        [random_bond_feature(rng) for _ in edges_undir],
-        dtype=torch.float32
-    )
-
-    return build_graph(X, edges_undir, E_undir)
 
 
 def generate_random_graph(

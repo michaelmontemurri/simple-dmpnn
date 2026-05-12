@@ -113,7 +113,7 @@ class DMPNNTrainer:
     def train_batch(self, batch):
         """Run one optimization step on a prepared batch."""
         self.model.train()
-        self.optimizer.zero_grad()
+        self.optimizer.zero_grad(set_to_none=True)
         
         y_hat = self._forward_model(batch)
         loss = self._compute_loss(y_hat, batch["y"])

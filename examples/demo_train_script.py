@@ -3,7 +3,7 @@
 import torch
 from dataclasses import dataclass
 
-from dmpnn.synthetic import generate_unique_graphs
+from examples.synthetic_graph_gen import generate_unique_graphs
 from dmpnn.model import DMPNN
 from dmpnn.training import DMPNNTrainer
 
@@ -35,9 +35,14 @@ def main():
     )
     optimizer = torch.optim.Adam(model.parameters(), config.lr)
     loss_fn = torch.nn.MSELoss()
-    device = "mps" if torch.backends.mps.is_available() else "cpu"
-    if device=="mps":
-        print("using MPS gpu")
+    if torch.cuda.is_available():
+        device = "cuda"
+    elif torch.backends.mps.is_available():
+        device = "mps"
+    else:
+        device = "cpu"
+    print(f"Using {device}")
+
     trainer = DMPNNTrainer(
         model,
         optimizer=optimizer,
