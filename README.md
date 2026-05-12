@@ -1,4 +1,4 @@
-# Directed Message Passing Neural Network: Implemented From Scratch
+# Simple D-MPNN: Implementing the Directed Message Passing Neural Network From Scratch
 
 This repository provides a straightforward PyTorch implementation of the Directed Message Passing Neural Network (D-MPNN) introduced by [Yang et al. (2019)](https://arxiv.org/abs/1904.01561). The goal is to make the architecture easy to understand, inspect, and adapt outside the full Chemprop ecosystem.
 
@@ -28,7 +28,7 @@ examples/
 ├── synthetic_graph_gen.py
 ├── demo_train_script.py
 ├── demo_inference_script.py
-└── demo_train_imdb_binary.py
+└── demo_imdb_binary.py
 
 notebooks/
 ├── demo.ipynb
@@ -71,7 +71,7 @@ For examples, see:
 
 - examples/demo_train_script.py for training a D-MPNN on simulated graphs
 - examples/demo_inference_script.py for running inference with a trained model
-- examples/demo_train_imdb_binary.py for converting a non-molecular PyG dataset into the D-MPNN graph format and training a graph classifier
+- examples/demo_imdb_binary.py for converting a non-molecular PyG dataset into the D-MPNN graph format and training a graph classifier
 - notebooks/demo.ipynb for an annotated explanation of the architecture
 - notebooks/testing.ipynb for testing with PyG graph objects and comparison to GINEConv
 - notebooks/profiling.ipynb for profiling CPU/GPU training-loop behavior with PyTorch Profiler
