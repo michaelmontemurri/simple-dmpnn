@@ -61,9 +61,11 @@ The reusable implementation is contained in `dmpnn/`.
 
 Run example scripts from the repository root using module syntax:
 
+```bash
 python -m examples.demo_train_script
 python -m examples.demo_inference_script
-python -m examples.demo_train_imdb_binary
+python -m examples.demo_imdb_binary
+```
 
 For examples, see:
 
