@@ -85,7 +85,6 @@ graph = {
     "X": X,                  # node features, shape [num_nodes, node_feat_dim]
     "B": B,                  # directed edge features, shape [num_directed_edges, edge_feat_dim]
     "edge_index": edge_index,# directed edges, shape [2, num_directed_edges]
-    "rev_index": rev_index,  # reverse-edge index for each directed edge
     "y": y,                  # graph-level target
 }
 ```
@@ -104,6 +103,11 @@ See examples/demo_train_imdb_binary.py for a complete non-molecular graph classi
 - Demo training and inference scripts
 - Testing notebook with comparison to `GINEConv`
 - Profiling notebook using PyTorch Profiler for CPU/GPU training-loop analysis
+
+## Limitations
+
+This implementation assumes simple bidirected graphs, with at most one directed edge for each ordered node pair. Multigraphs and duplicate parallel edges are not currently supported.
+
 
 ## Citation
 

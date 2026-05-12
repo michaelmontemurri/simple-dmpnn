@@ -52,7 +52,7 @@ def main():
 
 
     history = trainer.fit(train_graphs, val_graphs, config.epochs, config.batch_size)
-    trainer.save_model("saved_models/dmpnn_regressor.pt")
+    trainer.save_model("checkpoints/dmpnn_regressor.pt")
     print(history)
 
 if __name__ == "__main__":
