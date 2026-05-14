@@ -31,10 +31,10 @@ examples/
 └── demo_imdb_binary.py
 
 notebooks/
-├── demo.ipynb
-│   └── Annotated walkthrough of the D-MPNN theory and implementation
+├── implementation_walkthrough.ipynb
+│   └── Highly annotated walkthrough of the D-MPNN formulation and implementation
 ├── testing.ipynb
-│   └── Tests using PyG graph objects, plus minimal benchmarking against GINEConv
+│   └── Tests using PyG graph objects, MoleculeNet datasets, plus minimal benchmarking against GINEConv
 └── profiling.ipynb
     └── CPU/GPU profiling notebook using PyTorch Profiler to inspect training-loop overhead and syncs
 ```
@@ -72,9 +72,9 @@ For examples, see:
 - examples/demo_train_script.py for training a D-MPNN on simulated graphs
 - examples/demo_inference_script.py for running inference with a trained model
 - examples/demo_imdb_binary.py for converting a non-molecular PyG dataset into the D-MPNN graph format and training a graph classifier
-- notebooks/demo.ipynb for an annotated explanation of the architecture
+- notebooks/implementation_walkthrough.ipynb for an annotated explanation of the architecture
 - notebooks/testing.ipynb for testing with PyG graph objects and comparison to GINEConv
-- notebooks/profiling.ipynb for profiling CPU/GPU training-loop behavior with PyTorch Profiler
+- notebooks/profile_dmpnn_training.ipynb for profiling CPU/GPU training-loop behavior with PyTorch Profiler
 
 ## Applying to a New Graph Dataset
 
