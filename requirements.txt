@@ -1,5 +1,2 @@
-torch
-torch-geometric
-numpy
-networkx
-matplotlib
+# Full local environment for examples and notebooks.
+-e .[dev]
