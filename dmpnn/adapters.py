@@ -24,6 +24,7 @@ from typing import Iterable
 
 import torch
 import torch.nn.functional as F
+from torch import nn
 
 
 SUPPORTED_TASK_TYPES = {
@@ -33,6 +34,61 @@ SUPPORTED_TASK_TYPES = {
 }
 
 
+class OGBMolecularEncoder(nn.Module):
+    """Embed raw OGB molecular atom and bond categorical features."""
+
+    def __init__(self, emb_dim: int):
+        super().__init__()
+
+        try:
+            from ogb.graphproppred.mol_encoder import AtomEncoder, BondEncoder
+        except ImportError as exc:
+            raise ImportError(
+                "OGB molecular encoders require the `ogb` package. "
+                "Install it with `pip install ogb`."
+            ) from exc
+
+        self.atom_encoder = AtomEncoder(emb_dim=emb_dim)
+        self.bond_encoder = BondEncoder(emb_dim=emb_dim)
+
+    def forward(
+        self,
+        x: torch.Tensor,
+        edge_attr: torch.Tensor,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        return self.atom_encoder(x.long()), self.bond_encoder(edge_attr.long())
+
+
+class OGBDMPNN(nn.Module):
+    """D-MPNN wrapper for OGB molecular datasets.
+
+    This wrapper applies OGB's AtomEncoder and BondEncoder before passing the
+    embedded node and edge features to a generic D-MPNN model.
+    """
+
+    def __init__(
+        self,
+        dmpnn: nn.Module,
+        emb_dim: int,
+    ):
+        super().__init__()
+        self.ogb_encoder = OGBMolecularEncoder(emb_dim=emb_dim)
+        self.dmpnn = dmpnn
+
+    def forward(
+        self,
+        X: torch.Tensor,
+        B: torch.Tensor,
+        edge_index: torch.Tensor,
+        rev_index: torch.Tensor,
+        batch_vec: torch.Tensor,
+        num_graphs: int,
+    ) -> torch.Tensor:
+        """Encode raw OGB molecular features before delegating to the base D-MPNN."""
+        X, B = self.ogb_encoder(X, B)
+        return self.dmpnn(X, B, edge_index, rev_index, batch_vec, num_graphs)
+    
+    
 def _format_target(y, task_type: str = "regression") -> torch.Tensor:
     """Format a graph-level target for the configured task type."""
     if task_type not in SUPPORTED_TASK_TYPES:

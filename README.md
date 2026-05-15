@@ -2,7 +2,7 @@
 
 This repository provides a straightforward PyTorch implementation of the Directed Message Passing Neural Network (D-MPNN) introduced by [Yang et al. (2019)](https://arxiv.org/abs/1904.01561). The goal is to make directed, non-backtracking message passing easy to understand, inspect, and adapt outside the full Chemprop ecosystem.
 
-This project is intended as an educational and lightweight implementation. It is not a drop-in replacement for Chemprop and does not include Chemprop's full molecular featurization, hyperparameter optimization, ensembling, checkpointing, or production training pipeline.
+This project is intended as an educational and lightweight implementation. It is not a drop-in replacement for Chemprop and does not include Chemprop's full molecular featurization, hyperparameter optimization, ensembling, checkpointing, or production training pipeline. For OGB molecular datasets, the package includes a small adaptation layer around OGB's atom and bond encoders so their categorical molecular features can be embedded in the intended way before entering the D-MPNN.
 
 <p align="center">
   <img src="figs/dmpnn_nonbacktracking_schematic.svg" alt="D-MPNN non-backtracking message passing schematic" width="52%">
@@ -13,6 +13,7 @@ This project is intended as an educational and lightweight implementation. It is
   <em>Left: schematic of non-backtracking directed message passing in a D-MPNN. Right: attribution plot from this repository's synthetic example.</em>
 </p>
 
+## D-MPNN Message Passing
 
 For a directed bond $v \to u$, the initial hidden state is
 
@@ -84,7 +85,7 @@ notebooks/
 ├── implementation_walkthrough.ipynb
 │   └── Highly annotated walkthrough of the D-MPNN formulation and implementation
 ├── testing.ipynb
-│   └── Tests using PyG graph objects, MoleculeNet datasets, plus minimal benchmarking against GINEConv
+│   └── Tests using PyG graph objects, MoleculeNet datasets, OGB molecular datasets, plus minimal benchmarking against GINEConv
 └── profile_dmpnn_training.ipynb
     └── CPU/GPU profiling notebook using PyTorch Profiler to inspect training-loop overhead and syncs
 ```
@@ -116,7 +117,7 @@ The reusable implementation is contained in `dmpnn/`.
 After installation, you can import the main API directly:
 
 ```python
-from dmpnn import DMPNN, DMPNNTrainer
+from dmpnn import DMPNN, DMPNNTrainer, OGBDMPNN
 ```
 
 To use this project from another local repository, install it into that repository's environment with:
@@ -148,8 +149,9 @@ For examples, see:
 - [`examples/demo_inference_script.py`](examples/demo_inference_script.py) for running inference with a trained model
 - [`examples/demo_imdb_binary.py`](examples/demo_imdb_binary.py) for converting a non-molecular PyG dataset into the D-MPNN graph format and training a graph classifier
 - [`notebooks/implementation_walkthrough.ipynb`](notebooks/implementation_walkthrough.ipynb) for an annotated explanation of the architecture
-- [`notebooks/testing.ipynb`](notebooks/testing.ipynb) for testing with PyG graph objects and comparison to `GINEConv`
+- [`notebooks/testing.ipynb`](notebooks/testing.ipynb) for testing with PyG graph objects, comparing against `GINEConv`, and training on an OGB molecular dataset with the OGB atom/bond encoder adaptation
 - [`notebooks/profile_dmpnn_training.ipynb`](notebooks/profile_dmpnn_training.ipynb) for profiling CPU/GPU training-loop behavior with PyTorch Profiler
+
 ## Applying to a New Graph Dataset
 
 To use the model on a new graph dataset, each graph should be represented with:
@@ -167,6 +169,12 @@ The batching utilities construct the reverse-edge index, rev_index, needed for n
 
 See examples/demo_imdb_binary.py for a complete non-molecular graph classification example using IMDB-BINARY.
 
+### OGB Molecular Datasets
+
+OGB molecular datasets such as `ogbg-molhiv` store atom and bond features as categorical integer columns rather than dense vectors. The `OGBMolecularEncoder` and `OGBDMPNN` helpers adapt those raw OGB features by applying OGB's learnable `AtomEncoder` and `BondEncoder` before the base D-MPNN sees them.
+
+For an example that loads an OGB molecular dataset, wraps a `DMPNN` in `OGBDMPNN`, and trains/evaluates it, see the final section of [`notebooks/testing.ipynb`](notebooks/testing.ipynb).
+
 ## Features
 
 - Directed edge hidden states with non-backtracking message passing
@@ -174,8 +182,9 @@ See examples/demo_imdb_binary.py for a complete non-molecular graph classificati
 - Graph-level sum pooling and MLP prediction head
 - Minimal trainer for regression and classification tasks
 - PyG adapter utilities for using PyG graph objects
+- OGB molecular encoder adaptation via `OGBMolecularEncoder` / `OGBDMPNN`
 - Demo training and inference scripts
-- Testing notebook with comparison to `GINEConv`
+- Testing notebook with comparison to `GINEConv` and an OGB molecular training example
 - Profiling notebook using PyTorch Profiler for CPU/GPU training-loop analysis
 
 ## Limitations
